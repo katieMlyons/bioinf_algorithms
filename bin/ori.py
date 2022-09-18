@@ -1,8 +1,16 @@
-# Chapter 1: looking at a bacterial ori with string functions
+# finding origin of replication
 import math
+from typing import Dict, Any
 
 
 def pattern_count(text, pattern):
+    """
+    Counts the instances of a kmer pattern in a string.
+    Includes overlapping patterns.
+    :param text: string to search
+    :param pattern: pattern to find in string
+    :return: count of pattern repeats in string
+    """
     count = 0
     plen = len(pattern)
     tlen = len(text)
@@ -10,6 +18,41 @@ def pattern_count(text, pattern):
         if text[i:i + plen] == pattern:
             count += 1
     return count
+
+
+def most_frequent(text, k):
+    """
+    identifies the most frequent pattern of length k
+    in a string. can return multiple patterns
+    :param text: string to search
+    :param k: integer length of kmer to find
+    :return: list of most frequent patterns
+    """
+    freqs = {}
+    for i in range(len(text) - k + 1):
+        kmer = text[i:i+k]
+        if kmer not in freqs: # check that kmer hasn't been counted
+            subcount = pattern_count(text, kmer)
+            freqs[kmer] = subcount
+    maxfreq = max(freqs.values())
+    maxlist = [p for p in freqs if freqs[p] == maxfreq]
+    return maxlist
+
+
+def frequency_table(text, k):
+    """
+    For faster calculation of frequent kmers.
+    Makes frequency table of patterns of length k
+    :param text: string to search
+    :param k: integer length of kmers
+    :return: dictionary of kmers and their frequencies
+    """
+    freqmap = {}
+    n = len(text)
+    for i in range((n - k) + 1):
+        pattern = text[i:i + k]
+        freqmap[pattern] = freqmap.get(pattern, 0) + 1
+    return freqmap
 
 
 def pattern_index(text, pattern):
@@ -49,15 +92,6 @@ def frequent_kmer(text, k=5):
     for t in freqlist:
         if t[0] == mostfreq:
             print(t)
-
-
-def frequency_table(text, k=5):
-    freqmap = {}
-    n = len(text)
-    for i in range((n - k) + 1):
-        pattern = text[i:i + k]
-        freqmap[pattern] = freqmap.get(pattern, 0) + 1
-    return freqmap
 
 
 def better_frequent_kmer(text, k=5):
