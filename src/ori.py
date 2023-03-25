@@ -30,8 +30,8 @@ def most_frequent(text, k):
     """
     freqs = {}
     for i in range(len(text) - k + 1):
-        kmer = text[i:i+k]
-        if kmer not in freqs: # check that kmer hasn't been counted
+        kmer = text[i:i + k]
+        if kmer not in freqs:  # check that kmer hasn't been counted
             subcount = pattern_count(text, kmer)
             freqs[kmer] = subcount
     maxfreq = max(freqs.values())
@@ -54,6 +54,68 @@ def frequency_table(text, k):
         freqmap[pattern] = freqmap.get(pattern, 0) + 1
     return freqmap
 
+
+def better_frequent_kmer(text, k):
+    """
+    possibly faster way of finding most frequent kmers
+    :param text: string to search
+    :param k: integer length of kmers
+    :return: list of most frequent kmers
+    """
+    freqmap = frequency_table(text, k)
+    maxval = max(freqmap.values())
+    mostcommon = [i for i in freqmap if freqmap[i] == maxval]
+    return mostcommon
+
+
+# Probability functions
+# Calculating the probability of certain patterns occurring in a string
+
+def pr(N, a, pattern, t=1):
+    """
+    Finds the probability of a pattern occurring in a random string
+    :param N: random string length
+    :param a: number of letters in the alphabet
+    :param pattern: pattern string to match
+    :param t: minimum number of matches
+    :return: probability
+    """
+    letters = [str(x) for x in range(a)]
+    pools = [tuple(letters)] * N  # generate all possible combos
+    combos = [[]]
+    counter = 0
+    for pool in pools:
+        combos = [x + [y] for x in combos for y in pool]
+    combolist = ["".join(p for p in prod) for prod in combos]
+    numbercombos = len(combolist)
+    for combo in combolist:
+        if pattern_count(combo, str(pattern)) >= t:
+            counter += 1
+    print(f"{numbercombos} combos, {counter} counts, {counter / numbercombos} proportion")
+
+
+def count_patterns(N, p, t=1):
+    """
+    number of ways that t copies of a non-overlapping pattern
+    can appear in a string of length n
+    :param N: length of text
+    :param p: length of pattern
+    :param t: number of times to match
+    :return:
+    """
+    nonplength = N - (pattern * t)  # set up binomial
+    binom = math.factorial(t + nonplength) / (math.factorial(t) * math.factorial(nonplength))
+    return binom
+
+
+# DNA functions
+def reverse_complement(string):
+    dnadict = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
+    string = string.upper()
+    complement = ''
+    for i in range(len(string)-1, -1, -1):
+        complement += dnadict[string[i]]
+    return complement
 
 def pattern_index(text, pattern):
     indexlist = []
@@ -94,16 +156,6 @@ def frequent_kmer(text, k=5):
             print(t)
 
 
-def better_frequent_kmer(text, k=5):
-    mostcommon = []
-    freqmap = frequency_table(text, k)
-    maxval = max(freqmap.values())
-    for substring in freqmap:
-        if freqmap[substring] == maxval:
-            mostcommon.append(substring)
-    return mostcommon
-
-
 def clump_finder(genome, k, L, t):
     """
     finds any patterns that form an (L, t) clump
@@ -123,46 +175,6 @@ def clump_finder(genome, k, L, t):
             if freqmap[key] >= t:
                 totalset.add(key)
     return totalset
-
-
-def pr(N, a, pattern, t=1):
-    """
-    Finds the probability of a pattern occurring in a random string
-    :param N: random string length
-    :param a: number of letters in the alphabet
-    :param pattern: pattern to match
-    :param t: minimum number of matches
-    :return: probability
-    """
-    letters = [str(x) for x in list(range(a))]
-    pools = [tuple(letters)] * N  # generate all possible combos
-    combos = [[]]
-    counter = 0
-    for pool in pools:
-        combos = [x + [y] for x in combos for y in pool]
-    combolist = []
-    for prod in combos:
-        combolist.append("".join(p for p in prod))
-    numbercombos = len(combolist)
-    for combo in combolist:
-        if pattern_count(combo, str(pattern)) >= t:
-            counter += 1
-    print(f"{numbercombos} combos, {counter} counts, {counter / numbercombos} proportion")
-
-
-def pr_approx(N, a, pattern, t=1):
-    """
-    approximates the probability of a pattern appearing in a random string
-    :param N: length of text
-    :param a: number of letters in the alphabet
-    :param pattern: pattern to match
-    :param t: number of times to match
-    :return:
-    """
-    plength = len(pattern)
-    nonplength = N - (plength * t)  # set up binomial
-    binom = math.factorial(t + nonplength) / (math.factorial(t) * math.factorial(nonplength))
-    return binom
 
 
 ### got this from github

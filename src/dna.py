@@ -1,13 +1,4 @@
-from bin.ori import frequency_table
-dnadict = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
-
-
-def reverse_complement(string):
-    string = string.upper()
-    complement = ''
-    for i in range(len(string)-1, -1, -1):
-        complement += dnadict[string[i]]
-    return complement
+from src.ori import frequency_table
 
 
 def skew(string):

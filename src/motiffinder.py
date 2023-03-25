@@ -1,7 +1,7 @@
 import time
 
-from bin.ori import better_frequent_kmer, frequency_table
-from bin.dna import immediate_neighbors, hamming
+from src.ori import better_frequent_kmer, frequency_table
+from src.dna import immediate_neighbors, hamming
 import numpy as np
 import math
 import random
