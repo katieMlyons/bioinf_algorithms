@@ -124,9 +124,7 @@ def pattern_index(text, pattern):
     for i in range(tlen - plen + 1):
         if text[i:i + plen] == pattern:
             indexlist.append(i)
-    for i in indexlist:
-        print(i, end=' ')
-    print('\n')
+    return indexlist
 
 
 def dna_combinations(repeat=3):
