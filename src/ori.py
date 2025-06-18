@@ -103,7 +103,7 @@ def count_patterns(N, p, t=1):
     :param t: number of times to match
     :return:
     """
-    nonplength = N - (pattern * t)  # set up binomial
+    nonplength = N - (p * t)  # set up binomial
     binom = math.factorial(t + nonplength) / (math.factorial(t) * math.factorial(nonplength))
     return binom
 
