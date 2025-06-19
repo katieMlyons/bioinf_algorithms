@@ -1,32 +1,27 @@
 # finding origin of replication
 import math
 from typing import Dict, Any
+import itertools
 
 
-def pattern_count(text, pattern):
+def pattern_count(text: str, pattern: str) -> int:
     """
     Counts the instances of a kmer pattern in a string.
     Includes overlapping patterns.
-    :param text: string to search
-    :param pattern: pattern to find in string
-    :return: count of pattern repeats in string
     """
     count = 0
     plen = len(pattern)
     tlen = len(text)
-    for i in range((tlen - plen) + 1):
+    for i in range(tlen - plen + 1):
         if text[i:i + plen] == pattern:
             count += 1
     return count
 
 
-def most_frequent(text, k):
+def most_frequent(text:str, k:int) -> list:
     """
     identifies the most frequent pattern of length k
     in a string. can return multiple patterns
-    :param text: string to search
-    :param k: integer length of kmer to find
-    :return: list of most frequent patterns
     """
     freqs = {}
     for i in range(len(text) - k + 1):
@@ -39,13 +34,10 @@ def most_frequent(text, k):
     return maxlist
 
 
-def frequency_table(text, k):
+def frequency_table(text: str, k: int) -> dict[str,int]:
     """
     For faster calculation of frequent kmers.
     Makes frequency table of patterns of length k
-    :param text: string to search
-    :param k: integer length of kmers
-    :return: dictionary of kmers and their frequencies
     """
     freqmap = {}
     n = len(text)
@@ -55,12 +47,9 @@ def frequency_table(text, k):
     return freqmap
 
 
-def better_frequent_kmer(text, k):
+def better_frequent_kmer(text: str, k: int) -> list[str]:
     """
     possibly faster way of finding most frequent kmers
-    :param text: string to search
-    :param k: integer length of kmers
-    :return: list of most frequent kmers
     """
     freqmap = frequency_table(text, k)
     maxval = max(freqmap.values())
@@ -71,26 +60,20 @@ def better_frequent_kmer(text, k):
 # Probability functions
 # Calculating the probability of certain patterns occurring in a string
 
-def pr(N, a, pattern, t=1):
+def pr(N:int, a:int, pattern:str, t:int=1) -> None:
     """
-    Finds the probability of a pattern occurring in a random string
-    :param N: random string length
-    :param a: number of letters in the alphabet
-    :param pattern: pattern string to match
-    :param t: minimum number of matches
-    :return: probability
+    Finds the probability of a pattern occurring at least t times in a random string of length N
+    Alphabet of a letters (2 for binary 0/1)
+    pattern must include only digits contained in alphabet
+    Prints probability, no return
     """
-    letters = [str(x) for x in range(a)]
-    pools = [tuple(letters)] * N  # generate all possible combos
-    combos = [[]]
-    counter = 0
-    for pool in pools:
-        combos = [x + [y] for x in combos for y in pool]
-    combolist = ["".join(p for p in prod) for prod in combos]
-    numbercombos = len(combolist)
-    for combo in combolist:
-        if pattern_count(combo, str(pattern)) >= t:
-            counter += 1
+    letters = "".join(str(x) for x in range(a))
+    combolist = ["".join(p) for p in itertools.product(letters, repeat=N) if pattern in "".join(p)]
+    numbercombos = a**N
+    if t == 1:
+        counter = len(combolist)
+    else:
+        counter = sum(1 for combo in combolist if pattern_count(combo, pattern) >= t)
     print(f"{numbercombos} combos, {counter} counts, {counter / numbercombos} proportion")
 
 

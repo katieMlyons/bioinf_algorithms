@@ -1,0 +1,2 @@
+1.2 pattern count - pattern_count ori.py
+1.13 probability of pattern repeated in random string - pr ori.py
