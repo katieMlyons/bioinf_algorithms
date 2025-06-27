@@ -92,30 +92,26 @@ def count_patterns(N, p, t=1):
 
 
 # DNA functions
-def reverse_complement(string):
+def reverse_complement(pattern:str) -> str:
     dnadict = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
-    string = string.upper()
+    string = pattern.upper()
     complement = ''
     for i in range(len(string)-1, -1, -1):
         complement += dnadict[string[i]]
     return complement
 
-def pattern_index(text, pattern):
+def pattern_index(pattern:str, genome:str) -> list[int]:
     indexlist = []
     plen = len(pattern)
-    tlen = len(text)
-    for i in range(tlen - plen + 1):
-        if text[i:i + plen] == pattern:
+    glen = len(genome)
+    for i in range(glen - plen + 1):
+        if genome[i:i + plen] == pattern:
             indexlist.append(i)
     return indexlist
 
 
-def dna_combinations(repeat=3):
-    """
-    based on itertools product
-    :param repeat: length of substring combos
-    :return: returns generator of substrings
-    """
+'''def dna_combinations(repeat=3):
+    #based on itertools product
     pools = [tuple('ACGT')] * repeat
     result = [[]]
     for pool in pools:
@@ -134,28 +130,7 @@ def frequent_kmer(text, k=5):
     freqlist = sorted(freqlist, reverse=True)
     for t in freqlist:
         if t[0] == mostfreq:
-            print(t)
-
-
-def clump_finder(genome, k, L, t):
-    """
-    finds any patterns that form an (L, t) clump
-    :param genome: string to search on
-    :param k: size of k-mers
-    :param L: window to look for clumps
-    :param t: number of repeats within window
-    :return: distinct k-mers over threshold
-    """
-    numwindows = len(genome) - L + 1
-    print(numwindows)
-    totalset = set()
-    for i in range(numwindows):
-        window = genome[i:i + L]
-        freqmap = frequency_table(window, k)
-        for key in freqmap:
-            if freqmap[key] >= t:
-                totalset.add(key)
-    return totalset
+            print(t)'''
 
 
 ### got this from github
@@ -203,14 +178,14 @@ def BetterClumpFinder(genome, k, L, t):
         pattern_count[genome[i:i + k]] += 1
 
     for i in pattern_count:
-        if pattern_count[i] == 3:
+        if pattern_count[i] >= t:
             kmers.append(i)
 
     for i in range(m, n):
         pattern_count[genome[i:i + k]] += 1
         pattern = pattern_list[i - m]
         pattern_count[pattern] -= 1
-        if pattern_count[genome[i:i + k]] == 3:
+        if pattern_count[genome[i:i + k]] >= t:
             kmers.append(genome[i:i + k])
 
     return len(list(dict.fromkeys(kmers)))

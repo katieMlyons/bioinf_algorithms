@@ -1,7 +1,7 @@
-from src.ori import frequency_table
+from src.ori import frequency_table, reverse_complement
 
 
-def skew(string):
+def skew(string:str) -> list[int]:
     skewcount = 0
     skewlist = []
     skewlist.append(skewcount)
@@ -14,13 +14,14 @@ def skew(string):
     return skewlist
 
 
-def min_skew(string):
-    skewlist = skew(string)
+def min_skew(genome:str) -> list[int]:
+    skewlist = skew(genome)
     minskew = min(skewlist)
+    minlist = []
     for i, val in enumerate(skewlist):
         if val == minskew:
-            print(i, end=" ")
-    print("\n")
+            minlist.append(i)
+    return minlist
 
 
 def hamming(str1, str2):
