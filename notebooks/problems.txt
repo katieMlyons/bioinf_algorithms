@@ -1,2 +1,6 @@
 1.2 pattern count - pattern_count ori.py
+1.3 reverse_complement, pattern_index ori.py
+1.4 ClumpFinder ori.py
+1.7 skew, min_skew dna.py
+1.8 hamming_distance, approximate_pattern_matching, approximate_pattern_count dna.py
 1.13 probability of pattern repeated in random string - pr ori.py

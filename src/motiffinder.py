@@ -1,7 +1,7 @@
 import time
 
 from src.ori import better_frequent_kmer, frequency_table
-from src.dna import immediate_neighbors, hamming
+from src.dna import neighbors, hamming
 import numpy as np
 import math
 import random
@@ -32,8 +32,8 @@ def motif_enumeration(dna, k, d):
     """
     patterns = set()
     for kmer in frequency_table(dna[0], k):
-        for kdmotif in immediate_neighbors(kmer, d):
-            neighborstotest = immediate_neighbors(kdmotif, d)
+        for kdmotif in neighbors(kmer, d):
+            neighborstotest = neighbors(kdmotif, d)
             for otherstring in dna[1:]:
                 for neighb in neighborstotest:
                     if otherstring.find(neighb) > -1:
@@ -108,7 +108,7 @@ def medianstring(dna,k):
     :return: median string with the shortest distance from a kmer in each dna string
     """
     distance = math.inf
-    patterns = immediate_neighbors("A"*k, k)  # all possible combos of length k
+    patterns = neighbors("A"*k, k)  # all possible combos of length k
     for pattern in patterns:
         distbetween = distancebetweenpatternandstrings(pattern, dna)
         if distance > distbetween:
